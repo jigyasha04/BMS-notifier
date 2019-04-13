@@ -1,0 +1,6 @@
+{
+  "name": "BMS-Notifier",
+  "description": "A bare-bones Gradle app, which can easily be deployed to Heroku and notifie you for any movie ticket availability on BMS",
+  "image": "heroku/gradle",
+  "addons": [ "heroku-postgresql" ]
+}
