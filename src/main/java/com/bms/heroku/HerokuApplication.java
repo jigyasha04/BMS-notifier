@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.heroku;
+package com.bms.heroku;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 
 import javax.sql.DataSource;
 import java.sql.Connection;

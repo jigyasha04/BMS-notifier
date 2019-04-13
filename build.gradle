@@ -26,6 +26,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.41.0'
+
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'org.webjars:jquery:3.3.1-1'
 	runtimeOnly 'org.webjars:jquery-ui:1.12.1'

@@ -2,16 +2,19 @@ package com.bms.notify;
 
 import com.bms.config.ConfigReader;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class NotifyUser {
@@ -76,8 +79,21 @@ public class NotifyUser {
         driver.navigate().to(url);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"countries-call-cloned_title\"]/span[1]")));
+
         if(!driver.findElement(By.className("action-button")).getText().equals("India")) {
         System.out.println("Country selected is not India");
+            String searchText = "India";
+            WebElement dropdown = driver.findElement(By.id("countries-call-cloned_msdd"));
+            dropdown.click(); // assuming you have to click the "dropdown" to open it
+            List<WebElement> options = dropdown.findElements(By.tagName("li"));
+            for (WebElement option : options)
+            {
+                if (option.getText().equals(searchText))
+                {
+                    option.click(); // click the desired option
+                    break;
+                }
+            }
         }
 
         wait.until(ExpectedConditions.elementToBeClickable(By.id("call-number")));
@@ -92,7 +108,7 @@ public class NotifyUser {
     }
 
 
-   /* public static void main(String[] args){
+  /* public static void main(String[] args){
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--allow-file-access-from-files",
