@@ -42,15 +42,16 @@ public class NotifyUser {
 
     public void notifyUser(ChromeDriver drvr,WebDriverWait wait, String phNum, String ticketDtl) {
 
-        if(drvr == null){
+       // if(drvr == null){
             sendMessage(phNum, ticketDtl, 0);
-        } else{
+       // } else{
             sendNotificationThroughCall(drvr,wait, phNum, ticketDtl);
-        }
+       // }
     }
 
     private void sendMessage(String phNum, String ticketDetail, int j) {
         try {
+            ticketDetail="Book Ticket";
             logger.warn("Sending Notification to "+phNum + "with message "+ ticketDetail);
             String way2SmsUrl = "https://smsapi.engineeringtgr.com/send/?Mobile=8800890565&Password=salesforcerock&Message="+ticketDetail+"&To="+phNum+"&Key=turvo2QLhRPsWfGu1epxgU5DTVNK";
             URL url = new URL(way2SmsUrl);
@@ -99,13 +100,16 @@ public class NotifyUser {
                     break;
                 }
             }
+            logger.warn(driver.findElement(By.className("action-button")).getText());
         }
 
         wait.until(ExpectedConditions.elementToBeClickable(By.id("call-number")));
         driver.findElement(By.id("call-number")).sendKeys(phNum);
-
+        logger.warn("Phone Number Entered" + phNum);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("next-step")));
         driver.findElement(By.id("next-step")).click();
+
+        logger.warn("Click and Wait for 50 second");
         driver.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"container_dial\"]/div[5]/div")));
