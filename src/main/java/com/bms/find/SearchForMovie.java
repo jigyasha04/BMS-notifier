@@ -56,13 +56,14 @@ public class SearchForMovie {
         options.addArguments("--allow-file-access-from-files",
                 "--use-fake-ui-for-media-stream",
                 "--allow-file-access",
-                "--use-file-for-fake-audio-capture=/Users/subrat.thakur/Downloads/avengers-endgame-ringtone.mp3",
+                "--use-file-for-fake-audio-capture",
                 "--use-fake-device-for-media-stream",
                 "--use-file-for-fake-audio-capture=/Users/subrat.thakur/Downloads/avengers-endgame-ringtone.mp3");
         driver  = new ChromeDriver(options);
         wait =  new WebDriverWait(driver, 40);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
+
         logger.warn("================== Search Started "+dtf.format(now)+" ==========================");
         if(searchForURL(key) !=null) {
             initiateUrlLevelSearch(true);
