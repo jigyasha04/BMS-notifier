@@ -48,7 +48,11 @@ public class SearchForMovie {
     public boolean searchWithDetails() {
 
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        options.addArguments("window-size=1200x600");
         options.addArguments("--disable-notifications");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--no-sandbox");
         options.addArguments("--allow-file-access-from-files",
                 "--use-fake-ui-for-media-stream",
                 "--allow-file-access",
