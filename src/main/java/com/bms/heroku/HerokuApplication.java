@@ -51,12 +51,13 @@ public class HerokuApplication {
 
   public static void main(String[] args) throws Exception {
     SpringApplication.run(HerokuApplication.class, args);
-    logger.warn("Start searching for Movie");
-    BmsEntry.wakeUpWatchman();
   }
 
   @RequestMapping("/")
   String index() {
+
+    logger.warn("Start searching for Movie");
+    BmsEntry.wakeUpWatchman();
     return "index";
   }
 
