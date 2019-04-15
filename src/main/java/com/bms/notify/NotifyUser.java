@@ -1,6 +1,7 @@
 package com.bms.notify;
 
 import com.bms.config.ConfigReader;
+import com.bms.find.SearchForMovie;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,6 +10,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +21,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class NotifyUser {
+
+    private static Logger logger = LoggerFactory.getLogger(NotifyUser.class);
 
     private NotifyUser()
     {
@@ -46,7 +51,7 @@ public class NotifyUser {
 
     private void sendMessage(String phNum, String ticketDetail, int j) {
         try {
-            System.out.println("Sending Notification to "+phNum + "with message "+ ticketDetail);
+            logger.warn("Sending Notification to "+phNum + "with message "+ ticketDetail);
             String way2SmsUrl = "https://smsapi.engineeringtgr.com/send/?Mobile=8800890565&Password=salesforcerock&Message="+ticketDetail+"&To="+phNum+"&Key=turvo2QLhRPsWfGu1epxgU5DTVNK";
             URL url = new URL(way2SmsUrl);
             URLConnection urlcon = url.openConnection();
@@ -57,10 +62,10 @@ public class NotifyUser {
                 response+=(char)i;
             }
             if(response.contains("success")){
-                System.out.println("Successfully send SMS");
+                logger.warn("Successfully send SMS");
                 //your code when message send success
             }else{
-                System.out.println(response);
+                logger.warn(response);
                 //Retry to send msg again
                 if(j < Integer.valueOf(ConfigReader.getProperty("MSG_RETRY_COUNT"))) {
                     sendMessage(phNum,ticketDetail, j++);
@@ -68,20 +73,20 @@ public class NotifyUser {
                 //your code when message not send
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            logger.warn(e.getMessage());
         }
     }
 
     private void sendNotificationThroughCall( ChromeDriver driver, WebDriverWait wait ,String phNum, String ticketDetail) {
 
-        System.out.println("send notification through Call");
+        logger.warn("send notification through Call");
         String url= "https://globfone.com/call-phone/";
         driver.navigate().to(url);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"countries-call-cloned_title\"]/span[1]")));
 
         if(!driver.findElement(By.className("action-button")).getText().equals("India")) {
-        System.out.println("Country selected is not India");
+        logger.warn("Country selected is not India");
             String searchText = "India";
             WebElement dropdown = driver.findElement(By.id("countries-call-cloned_msdd"));
             dropdown.click(); // assuming you have to click the "dropdown" to open it

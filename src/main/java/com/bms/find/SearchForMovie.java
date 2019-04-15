@@ -1,6 +1,7 @@
 package com.bms.find;
 
 import com.bms.config.ConfigReader;
+import com.bms.heroku.HerokuApplication;
 import com.bms.notify.NotifyUser;
 import com.bms.find.SearchForMovie.*;
 import org.openqa.selenium.By;
@@ -12,6 +13,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -27,6 +30,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchForMovie {
+
+    private static Logger logger = LoggerFactory.getLogger(SearchForMovie.class);
 
     private int count = 0;
 
@@ -54,7 +59,7 @@ public class SearchForMovie {
         wait =  new WebDriverWait(driver, 40);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("================== Search Started "+dtf.format(now)+" ==========================");
+        logger.warn("================== Search Started "+dtf.format(now)+" ==========================");
         if(searchForURL(key) !=null) {
             initiateUrlLevelSearch(true);
         } else{
@@ -63,13 +68,13 @@ public class SearchForMovie {
         wait = null;
         driver.close();
         now = LocalDateTime.now();
-        System.out.println("================== Search End "+dtf.format(now)+" ==========================");
+        logger.warn("================== Search End "+dtf.format(now)+" ==========================");
 
         return isTaskDone;
     }
 
     private void initiateDefaultSearch() {
-        System.out.println("Default Level Search initiated");
+        logger.warn("Default Level Search initiated");
 
         boolean isCategoryAvailable = false;
         driver.navigate().to(ConfigReader.getProperty("MOVIE_URL"));
@@ -78,7 +83,7 @@ public class SearchForMovie {
 
         waitForJStoLoad();
 
-        System.out.println("Check for Confirmation window for personalize experience");
+        logger.warn("Check for Confirmation window for personalize experience");
         if(driver.findElements(By.id("wzrk-confirm")).size()>0) {
             driver.findElement(By.id("wzrk-confirm")).click();
         }
@@ -114,28 +119,28 @@ public class SearchForMovie {
             int index=currentURL.lastIndexOf('/');
             String baseUrl = currentURL.substring(0,index);
             savedURL = baseUrl;
-            System.out.println("Base URL is "+baseUrl);
+            logger.warn("Base URL is "+baseUrl);
             initiateUrlLevelSearch(false);
         }
     }
 
 
     private void initiateUrlLevelSearch(boolean isDirect) {
-        System.out.println("URL Level Search initiated");
+        logger.warn("URL Level Search initiated");
 
         String searchDate = ConfigReader.getProperty("SEARCH_DATE");
-        System.out.println("Search for Date: "+searchDate);
+        logger.warn("Search for Date: "+searchDate);
         driver.navigate().to(savedURL+"/"+searchDate);
         wait.until(ExpectedConditions.elementToBeClickable(By.className("phpShowtimes")));
 
         if(isDirect) {
-            System.out.println("Check for Select City window ");
+            logger.warn("Check for Select City window ");
             driver.findElement(By.xpath("//*[@id=\"navbar\"]/div[2]/div[2]/div[2]/div[2]/ul/li[4]/div/div[3]/div[2]/ul/li[4]/a")).click();
         }
         String currentURL = driver.getCurrentUrl();
         int index=currentURL.lastIndexOf('/');
         String urlDate = currentURL.substring(index+1,currentURL.length());
-        System.out.println("Date in currentURL: "+urlDate);
+        logger.warn("Date in currentURL: "+urlDate);
         if(urlDate.equals(searchDate)) {
             searchForTheater();
         }
@@ -150,9 +155,9 @@ public class SearchForMovie {
             String theaterName = theater.getText();
             String theaterExpectedName = ConfigReader.getProperty("SEARCH_UNIQUE_THEATER_NAME");
             if(theaterName.contains(theaterExpectedName)) {
-                System.out.println(theaterName);
+                logger.warn(theaterName);
                 for(String num: subscriber) {
-                    System.out.println("Notifying User with Phone Number"+ num);
+                    logger.warn("Notifying User with Phone Number"+ num);
                     NotifyUser.getInstance().notifyUser(driver, wait, num, createMsgToSend(theaterName));
 
                     driver.manage().timeouts().implicitlyWait(50, TimeUnit.SECONDS);
@@ -207,10 +212,10 @@ public class SearchForMovie {
         try{
            str = URLEncoder.encode(str, "UTF-8");
         } catch (UnsupportedEncodingException ex){
-            System.out.println(ex.getMessage());
+            logger.warn(ex.getMessage());
         }
 
-        System.out.println(str);
+        logger.warn(str);
         return str;
     }
 
@@ -244,7 +249,7 @@ public class SearchForMovie {
 
 /*
     public static void main(String[] args){
-        System.out.println(new SearchForMovie().getNumbers());
+        logger.warn(new SearchForMovie().getNumbers());
     }*/
 
 }
