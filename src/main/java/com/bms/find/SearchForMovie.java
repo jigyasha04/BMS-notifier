@@ -110,7 +110,7 @@ public class SearchForMovie {
         // Print the languages
         for (WebElement categoryElement : moviescategoryList) {
             String categoryName = categoryElement.getText();
-            if(categoryName.equals(ConfigReader.getProperty("MOVIE_SCREEN_CATEGORY"))) {
+            if(categoryName.contains(ConfigReader.getProperty("MOVIE_SCREEN_CATEGORY"))) {
                 categoryElement.click();
                 isCategoryAvailable = true;
                 break;
@@ -220,11 +220,6 @@ public class SearchForMovie {
         int index=currentURL.lastIndexOf('/');
         String date = currentURL.substring(index+1,currentURL.length());
         str = str.concat(date).concat("  ").concat(currentURL);
-        try{
-           str = URLEncoder.encode(str, "UTF-8");
-        } catch (UnsupportedEncodingException ex){
-            logger.warn(ex.getMessage());
-        }
 
         logger.warn(str);
         return str;
