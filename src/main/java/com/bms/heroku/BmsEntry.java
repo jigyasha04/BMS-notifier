@@ -12,9 +12,9 @@ public class BmsEntry {
 
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 
-    public static void wakeUpWatchman() {
+    private static SearchForMovie searchMovie = new SearchForMovie();
 
-        SearchForMovie searchMovie = new SearchForMovie();
+    public static void wakeUpWatchman() {
 
         Runnable runnable = new Runnable() {
             public void run() {
@@ -28,7 +28,7 @@ public class BmsEntry {
 
             }
         };
-        scheduler.scheduleAtFixedRate(runnable, 0, 2, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(runnable, 0, 5, TimeUnit.MINUTES);
     }
 
 }

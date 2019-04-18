@@ -39,28 +39,35 @@ public class SearchForMovie {
 
     private boolean isTaskDone =false;
 
-    private ChromeDriver driver;
+    private static ChromeDriver driver = null;
 
-    private  WebDriverWait wait ;
+    private static WebDriverWait wait = null;
 
-    private String savedURL=null;
+    private static ChromeOptions options = null;
+
+    private static String savedURL=null;
 
     public boolean searchWithDetails() {
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        options.addArguments("window-size=1200x600");
-        options.addArguments("--disable-notifications");
-        options.addArguments("--disable-gpu");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--allow-file-access-from-files",
-                "--use-fake-ui-for-media-stream",
-                "--allow-file-access",
-                "--use-file-for-fake-audio-capture",
-                "--use-fake-device-for-media-stream",
-                "--use-file-for-fake-audio-capture=/Users/subrat.thakur/Downloads/avengers-endgame-ringtone.mp3");
-        driver  = new ChromeDriver(options);
-        wait =  new WebDriverWait(driver, 40);
+        if(options == null) {
+            options = new ChromeOptions();
+            options.addArguments("--headless");
+            options.addArguments("window-size=1200x600");
+            options.addArguments("--disable-notifications");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--allow-file-access-from-files",
+                    "--use-fake-ui-for-media-stream",
+                    "--allow-file-access",
+                    "--use-file-for-fake-audio-capture",
+                    "--use-fake-device-for-media-stream",
+                    "--use-file-for-fake-audio-capture=/Users/subrat.thakur/Downloads/avengers-endgame-ringtone.mp3");
+        }
+
+        driver = new ChromeDriver(options);
+        if(wait == null) {
+            wait = new WebDriverWait(driver, 40);
+        }
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
@@ -70,7 +77,6 @@ public class SearchForMovie {
         } else{
             initiateDefaultSearch();
         }
-        wait = null;
         driver.close();
         now = LocalDateTime.now();
         logger.warn("================== Search End "+dtf.format(now)+" ==========================");

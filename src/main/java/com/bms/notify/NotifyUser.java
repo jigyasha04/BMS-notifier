@@ -13,16 +13,22 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class NotifyUser {
 
     private static Logger logger = LoggerFactory.getLogger(NotifyUser.class);
+
+    private static boolean textMsgSent = false;
 
     private NotifyUser()
     {
@@ -42,16 +48,17 @@ public class NotifyUser {
 
     public void notifyUser(ChromeDriver drvr,WebDriverWait wait, String phNum, String ticketDtl) {
 
-       // if(drvr == null){
-            sendMessage(phNum, ticketDtl, 0);
-       // } else{
-            sendNotificationThroughCall(drvr,wait, phNum, ticketDtl);
-       // }
+        sendNotificationThroughMail(ticketDtl);
+
+        sendMessage(phNum, ticketDtl, 0);
+
+
+        //sendNotificationThroughCall(drvr,wait, phNum, ticketDtl);
     }
 
     private void sendMessage(String phNum, String ticketDetail, int j) {
         try {
-            ticketDetail="Book Ticket";
+            ticketDetail="Book_Ticket";
             logger.warn("Sending Notification to "+phNum + "with message "+ ticketDetail);
             String way2SmsUrl = "https://smsapi.engineeringtgr.com/send/?Mobile=8800890565&Password=salesforcerock&Message="+ticketDetail+"&To="+phNum+"&Key=turvo2QLhRPsWfGu1epxgU5DTVNK";
             URL url = new URL(way2SmsUrl);
@@ -62,13 +69,15 @@ public class NotifyUser {
             while ((i = stream.read()) != -1) {
                 response+=(char)i;
             }
-            if(response.contains("success")){
+            if(response.contains("Message Sent Successfully")){
                 logger.warn("Successfully send SMS");
+                textMsgSent= true;
                 //your code when message send success
             }else{
                 logger.warn(response);
+                textMsgSent= false;
                 //Retry to send msg again
-                if(j < Integer.valueOf(ConfigReader.getProperty("MSG_RETRY_COUNT"))) {
+                if(j < Integer.valueOf(ConfigReader.getProperty("MSG_RETRY_COUNT")) && !textMsgSent) {
                     sendMessage(phNum,ticketDetail, j++);
                 }
                 //your code when message not send
@@ -116,8 +125,49 @@ public class NotifyUser {
 
     }
 
+    private void sendNotificationThroughMail(String ticketDtl) {
+        String emails= ConfigReader.getProperty("SUBSCRIBERS_MAIL_ID");
+        String[] emailList = emails.split(",");
+        for(String email: emailList){
+            send(email,ticketDtl);
+        }
+    }
 
-  /* public static void main(String[] args){
+    private void send(String to,String msg){
+        //Get properties object
+        logger.warn("Sending Mail as notification to " + to);
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class",
+                "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+        //get Session
+        Session session = Session.getDefaultInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication("turvoshipment@gmail.com","testTurvo");
+                    }
+                });
+        logger.warn("MailId and Password validated");
+        //compose message
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
+            message.setSubject("Tickets are available for Booking!");
+            message.setText(msg);
+        //send message
+            Transport.send(message);
+            logger.warn("Mail sent successfully to "+ to);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+ /* public static void main(String[] args){
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--allow-file-access-from-files",
@@ -129,7 +179,7 @@ public class NotifyUser {
 
         ChromeDriver driver  = new ChromeDriver(options);
         WebDriverWait wait =  new WebDriverWait(driver, 40);
-        new NotifyUser().notifyUser(driver,wait,"6309018871","test");
+        new NotifyUser().notifyUser(driver,wait,"6309018871", "Endgame");
     }*/
 
 
