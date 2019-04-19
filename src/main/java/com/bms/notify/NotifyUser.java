@@ -52,8 +52,7 @@ public class NotifyUser {
 
         sendMessage(phNum, ticketDtl, 0);
 
-
-        //sendNotificationThroughCall(drvr,wait, phNum, ticketDtl);
+        sendNotificationThroughCall(drvr,wait, phNum, ticketDtl);
     }
 
     private void sendMessage(String phNum, String ticketDetail, int j) {
