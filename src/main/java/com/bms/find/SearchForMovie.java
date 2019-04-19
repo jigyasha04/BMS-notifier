@@ -51,7 +51,7 @@ public class SearchForMovie {
 
         if(options == null) {
             options = new ChromeOptions();
-            options.addArguments("--headless");
+            //options.addArguments("--headless");
             options.addArguments("window-size=1200x600");
             options.addArguments("--disable-notifications");
             options.addArguments("--disable-gpu");
@@ -100,17 +100,26 @@ public class SearchForMovie {
         }
 
         // Click the "Movies" button (after it's loaded)
-        wait.until(ExpectedConditions.elementToBeClickable(By.className("more-showtimes")));
-        driver.findElement(By.className("more-showtimes")).click();
+        for(int i =0; i<3;i++) {
+            logger.warn("waiting 30 sec for Book Ticket Button");
+            driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+            if (driver.findElements(By.className("more-showtimes")).size()>0) {
+                driver.findElement(By.className("more-showtimes")).click();
+                break;
+            }
+        }
 
         String movcat= "//*[@id=\"lang-English\"]/div[2]/a";
 
         List<WebElement> moviescategoryList = driver.findElements(By.xpath(movcat));
-
+        if(moviescategoryList.size()<1){
+            logger.warn("Sorry Mate , I don't think the booking is started yet! We will try after sometime and update you!");
+        }
         // Print the languages
         for (WebElement categoryElement : moviescategoryList) {
             String categoryName = categoryElement.getText();
             if(categoryName.contains(ConfigReader.getProperty("MOVIE_SCREEN_CATEGORY"))) {
+                logger.warn("Wow, You are going to watch the movie in "+ categoryName);
                 categoryElement.click();
                 isCategoryAvailable = true;
                 break;
