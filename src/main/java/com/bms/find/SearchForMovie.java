@@ -51,7 +51,7 @@ public class SearchForMovie {
 
         if(options == null) {
             options = new ChromeOptions();
-            //options.addArguments("--headless");
+            options.addArguments("--headless");
             options.addArguments("window-size=1200x600");
             options.addArguments("--disable-notifications");
             options.addArguments("--disable-gpu");
@@ -101,7 +101,7 @@ public class SearchForMovie {
 
         // Click the "Movies" button (after it's loaded)
         for(int i =0; i<3;i++) {
-            logger.warn("waiting 30 sec for Book Ticket Button");
+            logger.warn("Explicitly waiting 30 sec for Book Ticket Button");
             driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
             if (driver.findElements(By.className("more-showtimes")).size()>0) {
                 driver.findElement(By.className("more-showtimes")).click();
