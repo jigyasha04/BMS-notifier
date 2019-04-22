@@ -15,20 +15,20 @@ public class BmsEntry {
     private static SearchForMovie searchMovie = new SearchForMovie();
 
     public static void wakeUpWatchman() {
-
-        Runnable runnable = new Runnable() {
+        searchMovie.searchWithDetails()
+        /*Runnable runnable = new Runnable() {
             public void run() {
                 // task to run goes here
-               if(searchMovie.searchWithDetails()) {
-                   scheduler.shutdown();
+               if() {
+                   //scheduler.shutdown();
                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                    LocalDateTime now = LocalDateTime.now();
                    System.out.println("Task Complete at "+ dtf.format(now));
                }
 
             }
-        };
-        scheduler.scheduleAtFixedRate(runnable, 0, 5, TimeUnit.MINUTES);
+        };*/
+        //scheduler.scheduleAtFixedRate(runnable, 0, 5, TimeUnit.MINUTES);
     }
 
 }
