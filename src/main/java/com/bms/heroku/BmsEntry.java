@@ -15,7 +15,7 @@ public class BmsEntry {
     private static SearchForMovie searchMovie = new SearchForMovie();
 
     public static void wakeUpWatchman() {
-        searchMovie.searchWithDetails()
+        searchMovie.searchWithDetails();
         /*Runnable runnable = new Runnable() {
             public void run() {
                 // task to run goes here
